@@ -22,7 +22,6 @@ const body = await response.json()
     const bookingId = body.bookingid
     console.log(bookingId);
     console.log(body.booking.bookingdates.checkin)
-
 })
 
 test('Post API with UI', async({request,page,context})=>{
@@ -48,4 +47,33 @@ console.log("Raw Response:", JSON.stringify(body));
 await page.goto('https://demoblaze.com/cart.html');
 expect(await page.locator("//td[text()='Samsung galaxy s6']")).toBeVisible();
 await page.pause();
+})
+
+test('Third Post request with get Chaining', async ({ request }) => {
+    const response = await request.post('https://restful-booker.herokuapp.com/booking',{ data :{
+        "firstname": "James",
+        "lastname": "Brown",
+        "totalprice": 111,
+        "depositpaid": true,
+        "bookingdates": {
+            "checkin": "2018-01-01",
+            "checkout": "2019-01-01"
+        },
+        "additionalneeds": "Breakfast"
+    }})
+const body = await response.json()
+  
+
+    expect(response.status()).toBe(200);
+
+    expect(body.booking.depositpaid).toBe(true);
+    const bookingId = body.bookingid
+
+     const getresponse = await request.get(`https://restful-booker.herokuapp.com/booking/${bookingId}`);
+
+     const getbody = await getresponse.json();
+     expect(getresponse.status()).toBe(200);
+     console.log("Thi is the get respose");
+     console.log(getbody);
+          expect(getbody.booking.firstname).toBe('James');
 })
