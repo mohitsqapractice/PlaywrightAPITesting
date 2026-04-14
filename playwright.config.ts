@@ -24,13 +24,20 @@ export default defineConfig({
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
-  use: {
-    /* Base URL to use in actions like `await page.goto('')`. */
-    baseURL: 'https://restful-booker.herokuapp.com',
+use: {
+  baseURL: 'https://localhost:8443',
+  ignoreHTTPSErrors: true,
 
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry',
-  },
+  clientCertificates: [
+    {
+      origin: 'https://localhost:8443',
+      certPath: './certs/client.crt',
+      keyPath: './certs/client.key'
+    }
+  ],
+
+  trace: 'on-first-retry',
+},
 
   /* Configure projects for major browsers */
   projects: [
