@@ -11,6 +11,11 @@ import { defineConfig, devices } from '@playwright/test';
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
+const mtlsPassword = process.env.MTLS_PASSWORD;
+
+if (!mtlsPassword) {
+  throw new Error('MTLS_PASSWORD is not set');
+}
 export default defineConfig({
   testDir: './tests',
   /* Run tests in files in parallel */
@@ -28,13 +33,13 @@ use: {
   baseURL: 'https://localhost:8443',
   ignoreHTTPSErrors: true,
 
-  clientCertificates: [
-    {
-      origin: 'https://localhost:8443',
-      certPath: './certs/client.crt',
-      keyPath: './certs/client.key'
-    }
-  ],
+ clientCertificates: [
+  {
+    origin: 'https://localhost:8443',
+    pfxPath: 'certs/client.pfx',
+    passphrase: mtlsPassword
+  }
+],
 
   trace: 'on-first-retry',
 },
